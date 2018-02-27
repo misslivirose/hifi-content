@@ -1,7 +1,7 @@
 (function(){
     var LIFETIME = 300;
     var SPAWN_POSITION = {x: 0, y: -10, z: 0}; // change in sandbox domain
-    var CHECK_INTERVAL = LIFETIME * 100;
+    var CHECK_INTERVAL = LIFETIME * 10;
 
     var cubeProperties; 
     var spawnCubeInterval;
