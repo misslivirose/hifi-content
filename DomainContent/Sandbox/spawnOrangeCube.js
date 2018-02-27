@@ -1,3 +1,12 @@
+//
+// Sandbox/spawnOrangeCube.js
+// 
+// Author: Liv Erickson
+// Copyright High Fidelity 2018
+//
+// Licensed under the Apache 2.0 License
+// See accompanying license file or http://apache.org/
+//
 (function(){
     var LIFETIME = 300;
     var SPAWN_POSITION = {x: 0, y: -10, z: 0}; // change in sandbox domain
@@ -23,6 +32,7 @@
                 script: "atp:/cubeScript.js"
             };        
             spawnCubeInterval = Script.setInterval(function() {
+                print(JSON.stringify(Entities.getChildrenIDs(entityID)));
                 if (Entities.getChildrenIDs(entityID).length === 0) {
                     Entities.addEntity(cubeProperties); // add a cube if none exists 
                 }
