@@ -9,7 +9,7 @@
 //
 (function(){
     var LIFETIME = 300;
-    var SPAWN_POSITION = {x: 0, y: -10, z: 0}; // change in sandbox domain
+    var SPAWN_POSITION = {x: -14.672, y: -10.58, z: -15.8333}; // change in sandbox domain
     var CHECK_INTERVAL = LIFETIME * 10;
 
     var cubeProperties; 
@@ -25,11 +25,14 @@
                 type: "Box",
                 shape: "Cube",
                 color : {"red" : 240, "green" : 112, "blue" : 0}, 
+                dimensions : {x: 0.3092, y: 0.3092, z: 0.3092},
+                gravity : {x: 0, y: -2, z: 0},
                 lifetime: LIFETIME,
                 position: SPAWN_POSITION,
+                dynamic: true,
                 "parentID": entityID,            
                 "userData" : "{\"grabbableKey\":{\"grabbable\":true}}",
-                script: "atp:/cubeScript.js"
+                script: "atp:/scripts/cubeScript.js"
             };        
             spawnCubeInterval = Script.setInterval(function() {
                 print(JSON.stringify(Entities.getChildrenIDs(entityID)));
