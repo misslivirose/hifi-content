@@ -13,15 +13,36 @@
     var GAMEPAD_IDENTIFIER = "-Gamepad";
     var VIVE_IDENTIFIER = "-Vive";
     var RIFT_IDENTIFIER = "-Rift";
+    var WEB_IDENTIFIER = "MovementGif-Web";
+  
+    var GIF_DESKTOP_URL = "https://giphy.com/gifs/LYJZ2YTQiY0WoSoOKj/html5";
+    var GIF_VIVE_URL = "https://giphy.com/gifs/mnqTywAN88tiJarYIS/html5";
+    var GIF_RIFT_URL = "https://giphy.com/gifs/mnqTywAN88tiJarYIS/html5";
+    var GIF_GAMEPAD_URL = "https://giphy.com/gifs/LYJZ2YTQiY0WoSoOKj/html5";
+
+    
+    var WEB_ENTITY_BASE_PROPERTIES = {
+        "collidesWith" : "",
+        "collisionMask" : 0,
+        "dimensions" : { "x": 3.200000047683716, "y": 1.7999999523162842, "z": 0.009999999776482582 },
+        "name" : WEB_IDENTIFIER,
+        "position" : {"x" : 3.3181, "y" : -8.6590, "z" : -0.2557},
+        "rotation" : { "w": 0.7660241723060608, "x": -0.0002027750015258789,"y": -0.6427602767944336, "z": 0},
+        "type": "Web",
+        "userData": "{\"grabbableKey\":{\"grabbable\":false}}"
+    };
 
     var SOUND_URL = 'atp:/sounds/MovementAudio.wav';
     var SOUND = SoundCache.getSound(SOUND_URL);
+
+    var position;
     var audioPlaying;
 
     var desktopEntities = [];
     var gamePadEntities = [];
     var viveEntities = [];
     var riftEntities = [];
+    var webGifEntity;
 
     var wantDebug = true;
 
@@ -38,6 +59,7 @@
     };
 
     var showPanelsForDesktop = function() {
+        var webEntityProperties = WEB_ENTITY_BASE_PROPERTIES;
         if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
             // We have a game pad
             desktopEntities.forEach(function(element) {
@@ -46,15 +68,14 @@
                 }
                 makeVisible(element);
             });
-
             gamePadEntities.forEach(function(element) {
                 if (wantDebug) {
                     print("Showing game pad entities");
                 }
                 makeVisible(element);
             });
-
-
+            webEntityProperties.sourceUrl = GIF_GAMEPAD_URL;
+            webGifEntity = Entities.addEntity(WEB_ENTITY_BASE_PROPERTIES);
         } else {
             desktopEntities.forEach(function(element) {
                 if (wantDebug) {
@@ -62,35 +83,33 @@
                 }
                 makeVisible(element);
             });
+            webEntityProperties.sourceUrl = GIF_DESKTOP_URL;
+            webGifEntity = Entities.addEntity(webEntityProperties);
         }
     };
 
     var showPanelsForVR = function(deviceType) {
+        var webEntityProperties = WEB_ENTITY_BASE_PROPERTIES;
         switch (deviceType) {
             case "Rift" :
-                if (HMD.isHandControllerAvailable()) {
-                    if (wantDebug) {
-                        print("Showing Rift hand controller entities");
-                    }
-                    riftEntities.forEach(function(element) {
-                        makeVisible(element);
-                    });
-                    
-                } else if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
+                if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
                     if (wantDebug) {
                         print("Showing Gamepad entities for Rift");
                     }
                     gamePadEntities.forEach(function(element) {
                         makeVisible(element);
                     });
+                    webEntityProperties.sourceUrl = GIF_GAMEPAD_URL;
+                    webGifEntity = Entities.addEntity(webEntityProperties);                 
                 } else {
-                    // Keyboard & mouse
                     if (wantDebug) {
-                        print("Showing desktop entities for Rift");
+                        print("Showing Rift hand controller entities");
                     }
-                    desktopEntities.forEach(function(element) {
+                    riftEntities.forEach(function(element) {
                         makeVisible(element);
                     });
+                    webEntityProperties.sourceUrl = GIF_RIFT_URL;
+                    webGifEntity = Entities.addEntity(webEntityProperties);      
                 }
                 break;
             default:
@@ -101,6 +120,9 @@
                 viveEntities.forEach(function(element) {
                     makeVisible(element);
                 });
+                webEntityProperties.sourceUrl = GIF_VIVE_URL;
+                webGifEntity = Entities.addEntity(webEntityProperties);      
+
         } 
     };
 
@@ -130,11 +152,15 @@
         riftEntities.forEach(function(element) {
             makeInvisible(element);
         });
+        Entities.deleteEntity(webGifEntity);
+        webGifEntity = "";
     };
 
     ZoneItem.prototype = {
         preload: function(entityID) {
-            var position = Entities.getEntityProperties(entityID, 'position').position;
+            position = Entities.getEntityProperties(entityID, 'position').position;
+        },
+        enterEntity: function() {
             var nearbyEntities = Entities.findEntities(position, 10);
             nearbyEntities.forEach(function(element) {
                 var elementName = Entities.getEntityProperties(element, 'name').name;
@@ -161,10 +187,8 @@
                     if (wantDebug) {
                         print("Added" + element + " to rift");
                     }
-                }
+                } 
             });
-        },
-        enterEntity: function() {
             setDisplayType();
             if (SOUND.downloaded) {
                 audioPlaying = Audio.playSound(SOUND, {

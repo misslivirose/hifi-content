@@ -13,6 +13,23 @@
     var GAMEPAD_IDENTIFIER = "-Gamepad";
     var VIVE_IDENTIFIER = "-Vive";
     var RIFT_IDENTIFIER = "-Rift";
+    var WEB_IDENTIFIER = "MenuGif-Web";
+
+    var WEB_ENTITY_BASE_PROPERTIES = {
+        "collidesWith" : "",
+        "collisionMask" : 0,
+        "dimensions" : { "x": 3.200000047683716, "y": 1.7999999523162842, "z": 0.009999999776482582 },
+        "name" : WEB_IDENTIFIER,
+        "position" : {"x" : -17.1352, "y" : -8.6585, "z" : 1.6240},
+        "rotation" : {"w": 0.9550813436508179, "x": 0, "y": -0.29633983969688416,"z": 0},
+        "type": "Web",
+        "userData": "{\"grabbableKey\":{\"grabbable\":false}}"
+    };
+
+    var GIF_DESKTOP_URL = "https://giphy.com/gifs/25Im0Bse1k6E4BRCtg/html5";
+    var GIF_VIVE_URL = "https://giphy.com/gifs/1sx4wVbZC0pSgx8ua8/html5";
+    var GIF_RIFT_URL = "https://giphy.com/gifs/1sx4wVbZC0pSgx8ua8/html5";
+    var GIF_GAMEPAD_URL = "https://giphy.com/gifs/1sx4wVbZC0pSgx8ua8/html5";
 
     var HMD_SOUND_URL = 'atp:/sounds/MenuAudio-HMD.wav';
     var DESKTOP_SOUND_URL = 'atp:/sounds/MenuAudio-Desktop.wav';
@@ -27,6 +44,7 @@
     var gamePadEntities = [];
     var viveEntities = [];
     var riftEntities = [];
+    var webGifEntity;
 
     var wantDebug = true;
 
@@ -43,6 +61,7 @@
     };
 
     var showPanelsForDesktop = function() {
+        var webEntityProperties = WEB_ENTITY_BASE_PROPERTIES;
         if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
             // We have a game pad
             desktopEntities.forEach(function(element) {
@@ -58,7 +77,8 @@
                 }
                 makeVisible(element);
             });
-
+            webEntityProperties.sourceUrl = GIF_GAMEPAD_URL;
+            webGifEntity = Entities.addEntity(WEB_ENTITY_BASE_PROPERTIES);
 
         } else {
             desktopEntities.forEach(function(element) {
@@ -67,35 +87,36 @@
                 }
                 makeVisible(element);
             });
+            webEntityProperties.sourceUrl = GIF_DESKTOP_URL;
+            webGifEntity = Entities.addEntity(webEntityProperties);
+
         }
     };
 
     var showPanelsForVR = function(deviceType) {
+        var webEntityProperties = WEB_ENTITY_BASE_PROPERTIES;
         switch (deviceType) {
             case "Rift" :
-                if (HMD.isHandControllerAvailable()) {
-                    if (wantDebug) {
-                        print("Showing Rift hand controller entities");
-                    }
-                    riftEntities.forEach(function(element) {
-                        makeVisible(element);
-                    });
-                    
-                } else if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
+                if (!(typeof(Controller.Hardware.GamePad) === 'undefined')) {
                     if (wantDebug) {
                         print("Showing Gamepad entities for Rift");
                     }
                     gamePadEntities.forEach(function(element) {
                         makeVisible(element);
                     });
+                    webEntityProperties.sourceUrl = GIF_GAMEPAD_URL;
+                    webGifEntity = Entities.addEntity(webEntityProperties);      
+
+                   
                 } else {
-                    // Keyboard & mouse
                     if (wantDebug) {
-                        print("Showing desktop entities for Rift");
+                        print("Showing Rift hand controller entities");
                     }
-                    desktopEntities.forEach(function(element) {
+                    riftEntities.forEach(function(element) {
                         makeVisible(element);
                     });
+                    webEntityProperties.sourceUrl = GIF_RIFT_URL;
+                    webGifEntity = Entities.addEntity(webEntityProperties);      
                 }
                 break;
             default:
@@ -106,6 +127,9 @@
                 viveEntities.forEach(function(element) {
                     makeVisible(element);
                 });
+                webEntityProperties.sourceUrl = GIF_VIVE_URL;
+                webGifEntity = Entities.addEntity(webEntityProperties);      
+
         } 
     };
 
@@ -135,6 +159,8 @@
         riftEntities.forEach(function(element) {
             makeInvisible(element);
         });
+        Entities.deleteEntity(webGifEntity);
+        webGifEntity = "";
     };
 
     ZoneItem.prototype = {
@@ -167,6 +193,11 @@
                     riftEntities.push(element);
                     if (wantDebug) {
                         print("Added" + element + " to rift");
+                    }
+                } else if (elementName.indexOf(WEB_IDENTIFIER) !== -1) {
+                    webGifEntity = element;
+                    if (wantDebug) {
+                        print("Added" + element + " as the web entity");
                     }
                 }
             });

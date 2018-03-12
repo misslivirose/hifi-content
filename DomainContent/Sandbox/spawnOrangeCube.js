@@ -9,7 +9,7 @@
 //
 (function(){
     var LIFETIME = 300;
-    var SPAWN_POSITION = {x: -14.672, y: -10.58, z: -15.8333}; // change in sandbox domain
+    var SPAWN_POSITION = {x: 1.0047, y: -10.5956, z: 16.8437}; 
     var CHECK_INTERVAL = LIFETIME * 10;
 
     var cubeProperties; 
@@ -35,7 +35,6 @@
                 script: "atp:/scripts/cubeScript.js"
             };        
             spawnCubeInterval = Script.setInterval(function() {
-                print(JSON.stringify(Entities.getChildrenIDs(entityID)));
                 if (Entities.getChildrenIDs(entityID).length === 0) {
                     Entities.addEntity(cubeProperties); // add a cube if none exists 
                 }
