@@ -44,7 +44,7 @@
     var riftEntities = [];
     var webGifEntity;
 
-    var wantDebug = true;
+    var wantDebug = false;
 
     var ZoneItem = function(){
 
@@ -197,6 +197,8 @@
                     if (wantDebug) {
                         print("Added" + element + " as the web entity");
                     }
+                } else if (elementName.indexOf(WEB_IDENTIFIER) !== -1) {
+                    Entities.deleteEntity(element); // clean up old web entity
                 }
             });
             setDisplayType();
