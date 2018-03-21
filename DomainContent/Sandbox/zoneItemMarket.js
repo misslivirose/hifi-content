@@ -23,7 +23,8 @@
         "position" : {"x" : -16.6107, "y" : -8.6588, "z" : 21.3236},
         "rotation" : { "w": -0.3051055371761322, "x": 0, "y": -0.9523110389709473,"z": 0},
         "type": "Web",
-        "userData": "{\"grabbableKey\":{\"grabbable\":false}}"
+        "userData": "{\"grabbableKey\":{\"grabbable\":false}}",
+        "lifetime" : 300
     };
 
 

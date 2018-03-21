@@ -23,7 +23,8 @@
         "position" : {"x" : -17.1352, "y" : -8.6585, "z" : 1.6240},
         "rotation" : {"w": 0.9550813436508179, "x": 0, "y": -0.29633983969688416,"z": 0},
         "type": "Web",
-        "userData": "{\"grabbableKey\":{\"grabbable\":false}}"
+        "userData": "{\"grabbableKey\":{\"grabbable\":false}}",
+        "lifetime" : 300
     };
 
     var GIF_DESKTOP_URL = "https://giphy.com/gifs/25Im0Bse1k6E4BRCtg/html5";

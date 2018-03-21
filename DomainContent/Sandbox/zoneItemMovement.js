@@ -29,7 +29,8 @@
         "position" : {"x" : 3.3181, "y" : -8.6590, "z" : -0.2557},
         "rotation" : { "w": 0.7660241723060608, "x": -0.0002027750015258789,"y": -0.6427602767944336, "z": 0},
         "type": "Web",
-        "userData": "{\"grabbableKey\":{\"grabbable\":false}}"
+        "userData": "{\"grabbableKey\":{\"grabbable\":false}}",
+        "lifetime" : 300
     };
 
     var SOUND_URL = 'atp:/sounds/MovementAudio.wav';
