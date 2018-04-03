@@ -32,8 +32,7 @@
                 position: SPAWN_POSITION,
                 dynamic: true,
                 "userData" : "{\"grabbableKey\":{\"grabbable\":true}}"
-            };
-            Entities.addEntity(cubeProperties);         
+            };        
             spawnCubeInterval = Script.setInterval(function() {
                 Entities.addEntity(cubeProperties); 
             }, CHECK_INTERVAL);
