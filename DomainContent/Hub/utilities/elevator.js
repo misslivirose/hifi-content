@@ -10,8 +10,8 @@
 (function() {
   
   
-    var pointA = {x: -9.5283, y: -6.429, z: 5.0173};
-    var pointB = {x: -9.5283, y: -11.1246, z: 5.0173};
+    var pointA = {x: -9.6362, y: -8.9245, z: 5.1167};
+    var pointB = {x: -9.6362, y: -13.433, z: 5.1167};
     var pauseTime = 4; // seconds
     var MOVE_TIME = 5;
     var goingUp = false;
@@ -22,8 +22,6 @@
             movePlatform(goingUp);
             goingUp = !goingUp;
         }, (pauseTime + MOVE_TIME) * 1000);
-    
-    
     };
   
     var movePlatform = function(isGoingUp) {
