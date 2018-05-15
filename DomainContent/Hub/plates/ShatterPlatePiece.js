@@ -34,9 +34,9 @@
             "name":"Plate Particle Effect",
             "isEmitting":true,
             "lifespan":"0.2",
-            "lifetime" : 0.5,
+            "lifetime" : EMIT_TIME * 2,
             "maxParticles":"500",
-            "textures":"http://hifi-content.s3.amazonaws.com/alan/dev/Particles/Bokeh-Particle.png",
+            "textures": Script.resolvePath("textures/tiny-piece.png"),
             "emitRate":"145",
             "emitSpeed": 0.05,
             "emitDimensions":{"x":"0.1","y":".1","z":".1"},
@@ -62,9 +62,9 @@
             "azimuthFinish":"180"
         }, true);
         Entities.editEntity(_entityID, {visible: false, collidesWith: "", collisionless: true});
+        Entities.deleteEntity(_entityID);
         Script.setTimeout(function() {
-            Entities.deleteEntity(splat);
-            Entities.deleteEntity(_entityID);
+            Entities.editEntity(splat, {'emitRate' : 0});
         }, EMIT_TIME); 
     };
 
