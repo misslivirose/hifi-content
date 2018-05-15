@@ -34,7 +34,7 @@
             "name":"Plate Particle Effect",
             "isEmitting":true,
             "lifespan":"0.2",
-            "lifetime" : EMIT_TIME * 2,
+            "lifetime" : 3,
             "maxParticles":"500",
             "textures": Script.resolvePath("textures/tiny-piece.png"),
             "emitRate":"145",
