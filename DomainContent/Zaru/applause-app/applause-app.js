@@ -101,7 +101,16 @@
     }
 
     function getRotation() {
-        return Quat.fromVec3Degrees({x: 0, y: MyAvatar.bodyYaw - 180, z: 0});
+        if (!HMD.active) {
+            return Quat.fromVec3Degrees({x: 0, y: MyAvatar.bodyYaw - 180, z: 0});
+        } else {
+            var index = MyAvatar.getJointIndex("RightForeArm");
+            var localJointRotation = MyAvatar.getAbsoluteJointRotationInObjectFrame(index);
+            var adjustedLocalJointRotation = Quat.cancelOutRollAndPitch(localJointRotation); // only yaw on y axis
+            var multipliedJointRotation = Quat.multiply(Quat.fromVec3Degrees({x: 0, y: MyAvatar.bodyYaw - 90, z: 0}), adjustedLocalJointRotation);
+            var adjustedMultipliedJointRotation = Quat.cancelOutRollAndPitch(multipliedJointRotation);
+            return adjustedMultipliedJointRotation;
+        }
     }
 
     // Avatar Helper Functions
