@@ -34,7 +34,7 @@
     var handProximityDistance = MyAvatar.getEyeHeight() / HAND_PROXIMITY_SCALE;
     var APP_ICON = Script.resolvePath('./resources/hand-icon-by-freepik.png');
     var APPLAUSE_KEY = 't';
-    var APPLAUSE_VOLUME = 0.25;
+    var APPLAUSE_VOLUME = 0.8;
     var HAPTICS = {
         strength: 0.75,
         duration: 25,
@@ -103,7 +103,7 @@
     function getRotation() {
         if (!HMD.active) {
             return Quat.fromVec3Degrees({x: 0, y: MyAvatar.bodyYaw - 180, z: 0});
-        } else {
+        } else { 
             var headOrientation = MyAvatar.headOrientation;
             return Quat.multiply(headOrientation, Quat.fromVec3Degrees({x: 0, y: 180, z:0}));
         }
@@ -166,7 +166,7 @@
     }
 
     function compareRotations(q1, q2) {
-        var threshold = 0.85;
+        var threshold = 0.9;
         return (Quat.dot(q1, q2) <= threshold);
     }
 
@@ -318,7 +318,12 @@
             tablet.removeButton(button);
             tablet.webEventReceived.disconnect(onWebEventReceived);
         }
-        Controller.mousePressEvent.disconnect(mousePressEvent);
+        try {
+            Controller.mousePressEvent.disconnect(mousePressEvent);
+        } catch (e) {
+            
+        }
+        
         Controller.keyPressEvent.disconnect(keyPressEvent);
         removeDesktopOverlay();
         Settings.setValue(CAN_APPLAUD_SETTING, false);
