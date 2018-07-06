@@ -1,4 +1,7 @@
 (function () {
+
+    var TIMEOUT = 250;
+
     var INDIVIDUAL_CLAP_URLS = [
         Script.resolvePath("Claps/clap-3.wav"),
         Script.resolvePath("Claps/clap-4.wav"),
@@ -20,7 +23,7 @@
 
     var individualClapSound; 
     var applauseInjector;
-
+    var canClap = true;
 
     var ApplauseDrum = function () {
 
@@ -32,21 +35,26 @@
 
     ApplauseDrum.prototype = {
         collisionWithEntity: function (myID, theirID, collision) {
-            var otherProperties = Entities.getEntityProperties(theirID, 'name');
+            print(JSON.stringify(collision));
+            var otherProperties = Entities.getEntityProperties(theirID, ['name', 'position']);
             if (otherProperties.name === COLLIDER_NAME) {
                 if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
                     return;
                 }
                 individualClapSound = SoundCache.getSound(getRandomApplauseSound());
-                if (individualClapSound.downloaded) {
+                if (individualClapSound.downloaded && canClap) {
                     applauseInjector = Audio.playSound(
                         individualClapSound,
                         {
                             volume: APPLAUSE_VOLUME,
                             localOnly: false,
-                            position: MyAvatar.position
+                            position: otherProperties.position
                         }
                     );
+                    canClap = false;
+                    Script.setTimeout(function(){
+                        canClap = true;
+                    }, TIMEOUT);
                 }
                 if (HMD.active) {
                     Controller.triggerHapticPulse(HAPTICS.strength, HAPTICS.duration, HAPTICS.hands);
