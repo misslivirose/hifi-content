@@ -1,7 +1,5 @@
 (function () {
 
-    var TIMEOUT = 250;
-
     var INDIVIDUAL_CLAP_URLS = [
         Script.resolvePath("Claps/clap-3.wav"),
         Script.resolvePath("Claps/clap-4.wav"),
@@ -14,6 +12,7 @@
     ];
 
     var COLLIDER_NAME = "Applause Colliders";
+    
     var APPLAUSE_VOLUME = 10;    
     var HAPTICS = {
         strength: 0.75,
@@ -21,9 +20,13 @@
         hands: 2
     };
 
+    var activeCollisions = {
+        left: false,
+        right: false
+    };
+
     var individualClapSound; 
     var applauseInjector;
-    var canClap = true;
 
     var ApplauseDrum = function () {
 
@@ -35,30 +38,47 @@
 
     ApplauseDrum.prototype = {
         collisionWithEntity: function (myID, theirID, collision) {
-            print(JSON.stringify(collision));
             var otherProperties = Entities.getEntityProperties(theirID, ['name', 'position']);
-            if (otherProperties.name === COLLIDER_NAME) {
-                if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
-                    return;
+            if (otherProperties.name.indexOf(COLLIDER_NAME) !== -1) {
+                var hand = otherProperties.name.indexOf("Left") !== -1 ? 0 : 1;
+                print ("Collision type: " + collision.type);
+                switch (collision.type) {
+                    case 0: 
+                        activeCollisions[hand] = true;
+                        print("Beginning - " + hand + ":" + activeCollisions[hand]);
+                        break;
+                    case 1:
+                        print("State: Left " + activeCollisions[0] + ", Right" + activeCollisions[1]);
+                        if (activeCollisions[0] && activeCollisions[1]) {
+                            print ("We're both ready!");
+                            if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
+                                return;
+                            }
+                            individualClapSound = SoundCache.getSound(getRandomApplauseSound());
+                            if (individualClapSound.downloaded) {
+                                applauseInjector = Audio.playSound(
+                                    individualClapSound,
+                                    {
+                                        volume: APPLAUSE_VOLUME,
+                                        localOnly: false,
+                                        position: otherProperties.position
+                                    }
+                                );
+                            }
+                            if (HMD.active) {
+                                Controller.triggerHapticPulse(HAPTICS.strength, HAPTICS.duration, HAPTICS.hands);
+                            }
+                        } 
+                        break;
+                    case 2: 
+                        activeCollisions[hand] = false;
+                        print("Ending - " + hand + ":" + activeCollisions[hand]);
+                        break;
+                    default:
+                        print("You got here in a weird way, this collision type shouldn't exist!");
+                        break;
                 }
-                individualClapSound = SoundCache.getSound(getRandomApplauseSound());
-                if (individualClapSound.downloaded && canClap) {
-                    applauseInjector = Audio.playSound(
-                        individualClapSound,
-                        {
-                            volume: APPLAUSE_VOLUME,
-                            localOnly: false,
-                            position: otherProperties.position
-                        }
-                    );
-                    canClap = false;
-                    Script.setTimeout(function(){
-                        canClap = true;
-                    }, TIMEOUT);
-                }
-                if (HMD.active) {
-                    Controller.triggerHapticPulse(HAPTICS.strength, HAPTICS.duration, HAPTICS.hands);
-                }
+
             }
         }
     };
