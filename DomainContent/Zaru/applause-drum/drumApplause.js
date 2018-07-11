@@ -45,10 +45,6 @@
                 switch (collision.type) {
                     case 0: 
                         activeCollisions[hand] = true;
-                        print("Beginning - " + hand + ":" + activeCollisions[hand]);
-                        break;
-                    case 1:
-                        print("State: Left " + activeCollisions[0] + ", Right" + activeCollisions[1]);
                         if (activeCollisions[0] && activeCollisions[1]) {
                             print ("We're both ready!");
                             if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
@@ -70,7 +66,29 @@
                             }
                         } 
                         break;
+                    case 1:
+                        break;
                     case 2: 
+                        if (activeCollisions[0] && activeCollisions[1]) {
+                            print ("We're both ready!");
+                            if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
+                                return;
+                            }
+                            individualClapSound = SoundCache.getSound(getRandomApplauseSound());
+                            if (individualClapSound.downloaded) {
+                                applauseInjector = Audio.playSound(
+                                    individualClapSound,
+                                    {
+                                        volume: APPLAUSE_VOLUME,
+                                        localOnly: false,
+                                        position: otherProperties.position
+                                    }
+                                );
+                            }
+                            if (HMD.active) {
+                                Controller.triggerHapticPulse(HAPTICS.strength, HAPTICS.duration, HAPTICS.hands);
+                            }
+                        }
                         activeCollisions[hand] = false;
                         print("Ending - " + hand + ":" + activeCollisions[hand]);
                         break;

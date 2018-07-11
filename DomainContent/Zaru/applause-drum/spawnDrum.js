@@ -27,7 +27,10 @@ var DRUM_BASE_PROPERTIES = {
 var entities = Array();
 var overlays = Array();
 
+var drumEntity;
+
 function setup() {
+    print("Setting up drum entities");
     var leftCollider = COLLIDER_BASE_PROPERTIES;
     leftCollider.name = COLLIDER_NAME + " Left";
     leftCollider.parentJointIndex = MyAvatar.getJointIndex("LeftHandMiddle1");
@@ -42,18 +45,21 @@ function setup() {
     drum.localPosition = {x: 0.03, y: 0.2, z: 0.4};
     drum.visible = false;
     drum.locked = true;
-    entities.push(Entities.addEntity(drum)); 
+    drumEntity = Entities.addEntity(drum);
+    entities.push(drumEntity); 
 
     overlays.push(Overlays.addOverlay("model", {
-        position: Entities.getEntityProperties(entities[2], 'position').position,
-        parentID: entities[2],
+        parentID: MyAvatar.sessionUUID,
+        parentJointIndex: MyAvatar.getJointIndex("Hips"),
         grabbable: true,
         url: Script.resolvePath('Models/tamberine.obj'),
-        dimensions: {x: 0.5, y: 0.08, z: 0.5}
-    }));
+        localPosition: {x: 0.03, y: 0.2, z: 0.4},
+        dimensions: {x: 0.3, y: 0.06, z: 0.3}
+    })); 
 }
 
 function cleanup() {
+    print("Cleaning up drum entities");
     entities.forEach(function(entity) {
         Entities.editEntity(entity, {locked: false});
         Entities.deleteEntity(entity);
