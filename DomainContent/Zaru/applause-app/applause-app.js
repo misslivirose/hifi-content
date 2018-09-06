@@ -29,7 +29,7 @@
     var APPLAUSE_BUTTON_PRESSED = Script.resolvePath('./resources/button-pressed.png');
     var WINDOW_Y_OFFSET = 24;
     var BUTTON_DIMENSIONS = {x: 221, y: 69};
-    var BUTTON_PRESS_TIMEOUT = 150; // ms
+    var BUTTON_PRESS_TIMEOUT = 50; // ms
     var HAND_PROXIMITY_SCALE = 6;
     var handProximityDistance = MyAvatar.getEyeHeight() / HAND_PROXIMITY_SCALE;
     var APP_ICON = Script.resolvePath('./resources/hand-icon-by-freepik.png');
@@ -329,7 +329,7 @@
         Settings.setValue(CAN_APPLAUD_SETTING, false);
         Settings.setValue(HAS_APPLAUSE_APP_SETTING, false);
         HMD.displayModeChanged.disconnect(toggleOnHMDSwap);
-        MyAvatar.disconnect(adjustApplauseScale);
+        MyAvatar.scaleChanged.disconnect(adjustApplauseScale);
     }
 
     button.clicked.connect(onClicked);
@@ -349,9 +349,9 @@
     }
 
     function playSoundAndTriggerHaptics() {
-        if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
-            return;
-        }
+      //  if (applauseInjector !== undefined && applauseInjector.isPlaying()) {
+        //    return;
+        //}
         individualClapSound = SoundCache.getSound(getRandomApplauseSound());
         if (individualClapSound.downloaded) {
             applauseInjector = Audio.playSound(
@@ -379,7 +379,7 @@
             maxParticles:1,
             textures:'http://hifi-content.s3.amazonaws.com/alan/dev/Particles/heart-2.png',
             emitRate:1,
-            emitSpeed:3,
+            emitSpeed:1,
             emitOrientation: Quat.fromVec3Degrees({x: 0, y: 0, z: 0}),
             particleRadius:0.25,
             radiusSpread:0.25,
@@ -406,6 +406,7 @@
         playSoundAndTriggerHaptics();
         if (shouldUseParticles) {
             playParticleEffect();
+            print("playing effect");
         }
     }
    
