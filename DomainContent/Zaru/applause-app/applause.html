@@ -171,6 +171,23 @@
 
     <form>
         <fieldset>
+            <legend>Hand Controller Settings</legend> 
+            <div class="slidecontainer" style="display:initial">
+                <text> Sensitivity Slider for Hand Rotation Threshold</text>
+                <input type="range" min="0" max="1" step="0.01" value="0.9" id="sensitivityRange">
+                <text id = "sliderValue">Value: 0.9</text>
+            </div>
+            <div class="slidecontainer" style="display:initial">
+                    <text> Distance Slider for Hand Proximity (HMD) </text>
+                    <input type="range" min="0" max="1" step="0.01" value="0.25" id="distanceRange">
+                    <text id = "distanceValue">Value: 0.25</text>
+                </div>
+        </fieldset>
+    </form>
+
+
+    <form>
+        <fieldset>
             <legend>Types of clap audio</legend>
             <div style="display:initial" >
                 <input type="radio" id="single" 
@@ -240,6 +257,7 @@
             };
             EventBridge.emitWebEvent(JSON.stringify(event));
         });
+
         $('#applause-toggle').click(function () {
             var toggled = document.getElementById('applause-toggle').checked;
             var activeInstructions = isHMD ? '#hmd-instructions' : '#desktop-instructions';
@@ -253,6 +271,24 @@
             };
             EventBridge.emitWebEvent(JSON.stringify(event));
         });
+
+        $('#sensitivityRange').change( function() {
+            document.getElementById('sliderValue').innerHTML = 'Value: ' + $('#sensitivityRange').val();
+            var event = {
+                type: "sensitivityChange",
+                value: $('#sensitivityRange').val()
+            }
+            EventBridge.emitWebEvent(JSON.stringify(event));
+        })
+
+        $('#distanceRange').change( function() {
+            document.getElementById('distanceValue').innerHTML = 'Value: ' + $('#distanceRange').val();
+            var event = {
+                type: "distanceChange",
+                value: $('#distanceRange').val()
+            }
+            EventBridge.emitWebEvent(JSON.stringify(event));
+        })
     </script>
 </body>
 

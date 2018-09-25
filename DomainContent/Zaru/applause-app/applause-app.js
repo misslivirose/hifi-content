@@ -40,8 +40,7 @@
     var WINDOW_Y_OFFSET = 24;
     var BUTTON_DIMENSIONS = {x: 221, y: 69};
     var BUTTON_PRESS_TIMEOUT = 25; // ms
-    var HAND_PROXIMITY_SCALE = 6;
-    var handProximityDistance = MyAvatar.getEyeHeight() / HAND_PROXIMITY_SCALE;
+    var handProximityDistance = 0.2;
     var APP_ICON = Script.resolvePath('./resources/hand-icon-by-freepik.png');
     var APPLAUSE_KEY = 't';
     var APPLAUSE_VOLUME = 0.8;
@@ -50,6 +49,8 @@
         duration: 25,
         hands: 2
     };
+
+    var rotationSensitivity = 0.9;
 
     var audioIndex = "0";
 
@@ -171,8 +172,7 @@
     }
 
     function compareRotations(q1, q2) {
-        var threshold = 0.9;
-        return (Quat.dot(q1, q2) <= threshold);
+        return (Quat.dot(q1, q2) <= rotationSensitivity);
     }
 
     function getRandomApplauseSound() {
@@ -276,12 +276,19 @@
                 break;
 
             case 'radio-change' :
-                print("Value: " + event.value);
                 if (event.value <= 2) {
                     audioIndex = event.value; // check in case of weird message or malicious input
                 }
                 break;
             
+            case 'sensitivityChange' :
+                rotationSensitivity = event.value;
+                break;
+
+            case 'distanceChange' :
+                handProximityDistance = event.value;
+                break;
+
             default: 
                 break;
         }
