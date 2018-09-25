@@ -169,6 +169,31 @@
         <br>
     </div>
 
+    <form>
+        <fieldset>
+            <legend>Types of clap audio</legend>
+            <div style="display:initial" >
+                <input type="radio" id="single" 
+                       name="audio" value="0" checked />
+                <label for="single">Single Claps</label>
+            </div>
+    
+            <div style="display:initial">
+                <input type="radio" id="3-mixed" 
+                       name="audio" value="1" />
+                <label for="3-mixed">3 Claps Mixed</label>
+            </div>
+    
+            <div style="display:initial">
+                <input type="radio" id="random" 
+                       name="audio" value="2" />
+                <label for="random">Random Single or 3 Claps</label>
+            </div>
+    
+        </fieldset>
+    </form>
+    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
         var isHMD = false;
@@ -191,6 +216,14 @@
                 type: "applause-app-ready"
             }));
 
+        });
+
+        $('input[type=radio][name=audio]').change(function(){
+            var event = {
+                type : "radio-change",
+                value: this.value
+            };
+            EventBridge.emitWebEvent(JSON.stringify(event));
         });
 
         $('#particle-toggle').click(function () {
